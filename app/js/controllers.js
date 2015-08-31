@@ -4,35 +4,56 @@ angular.module('nu3.controllers', [])
 
 }])
 
-.controller('LoginCtrl', ['$mdSidenav', '$mdBottomSheet', '$log', '$q', '$scope', function($scope, $interval) {
+.controller('LoginCtrl', ['$scope', 'AuthenticationService', function($scope, AuthenticationService) {
+  
+  $scope.user = {
+    email: "teste@teste.com",
+    senha: null
+  }
 
-  $scope.images = [
-            {
-              src: "./img/food1.jpg",
-              alt: "image 1"
-            },
-            {
-              src: "./img/food2.jpg",
-              alt: "image 2"
-            },
-            {
-              src: "./img/food3.jpg",
-              alt: "image 3"
-            },
-            {
-              src: "./img/food4.jpg",
-              alt: "image 4"
-            }
-  ];
+  $scope.login = function() {
+    AuthenticationService.login($scope.user).then(
+        function onFulfilled(result){
+          console.log("Usuario logado: " + result.idUsuario);
+          result.email = $scope.user.email;
+          user = result;
+         $scope.user.senha = null;
+         window.localStorage['user'] = JSON.stringify(result);
+         //DBService.insertUser(result).then(function(){
+            console.log("Dados do usuário inseridos no banco de dados..." + JSON.stringify(result));
+            window.location.href = "/#/photoList";
+         //});
+        },
+        function onRejected(reason, status){
+          //do error handling
+
+          var error = "Falha ao logar, tente novamente.";
+          //if (status == 401) {
+          //  error = "Invalid Username or Password.";
+          //}
+          $scope.message = error;
+          
+        }
+
+      );
+  };
+
 }])
 
 .controller('RegisterCtrl', function() {
 
 })
 
-.controller('PhotoListCtrl', function() {
+.controller('PhotoListCtrl', ['$scope', function($scope) {
+  $scope.username = user.idUsuario;
+  $scope.user = {
+    email: 'teste@teste'
+  }
 
-})
+  $scope.sayHello = function() {
+    $scope.greeting = 'Hello ' + $scope.username + '!';
+  };
+}])
 
 .controller('PhoneDetailCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
     $scope.photoId = $routeParams.photoId;

@@ -1,18 +1,17 @@
-var nu3Web = 
+var user = null;
+var nu3 = 
 
   angular
-    .module('nu3', ['ngRoute', 'ngMaterial', 'angular-carousel', 'nu3.controllers']);
+    .module('nu3', ['ngRoute', 'ngMaterial', 'nu3.controllers', 'nu3.services']);
 
-nu3Web.config(['$routeProvider',
-function($routeProvider) {
+nu3.config(['$routeProvider', '$mdThemingProvider', '$logProvider', '$httpProvider',
+function($routeProvider, $mdThemingProvider, $logProvider, $httpProvider) {
+  $httpProvider.defaults.useXDomain=true;
+  //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+  $logProvider.debugEnabled(true);
   $routeProvider.
     when('/login', {
       templateUrl: 'templates/login.html',
-      controller: 'LoginCtrl'
-    }).
-    when('/register',{
-      templateUrl: 'templates/register.html',
-      controller: 'RegisterCtrl'
     }).
     when('/photoList', {
       templateUrl: 'templates/photolist.html',
@@ -25,4 +24,8 @@ function($routeProvider) {
     otherwise({
       redirectTo: '/login'
     });
+
+    $mdThemingProvider.theme('default')
+                          .primaryPalette('orange')
+                          .accentPalette('red');
 }]);
